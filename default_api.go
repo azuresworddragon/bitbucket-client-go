@@ -3806,6 +3806,63 @@ func (a *DefaultApiService) GetCommit(projectKey, repositorySlug, commitId strin
 }
 
 /* DefaultApiService
+ Retrieve pull requests associated with a commit &lt;i&gt;identified by its ID&lt;/i&gt;&gt;. In general, that ID is a SHA1. &lt;u&gt;From 2.11, ref names  like \&quot;refs/heads/master\&quot; are no longer accepted by this resource.&lt;/u&gt;  &lt;p&gt;  The authenticated user must have &lt;strong&gt;REPO_READ&lt;/strong&gt; permission for the specified repository to call this  resource.
+
+ @param commitId the commit ID to retrieve the pull-requests associated with it.
+ @return */
+func (a *DefaultApiService) GetCommitPullRequests(projectKey, repositorySlug, commitId string) (*APIResponse, error) {
+	var (
+		localVarHTTPMethod = strings.ToUpper("Get")
+		localVarPostBody   interface{}
+		localVarFileName   string
+		localVarFileBytes  []byte
+	)
+
+	// create path and map variables
+	localVarPath := a.client.cfg.BasePath + "/api/1.0/projects/{projectKey}/repos/{repositorySlug}/commits/{commitId}/pull-requests"
+	localVarPath = strings.Replace(localVarPath, "{"+"projectKey"+"}", fmt.Sprintf("%v", projectKey), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"repositorySlug"+"}", fmt.Sprintf("%v", repositorySlug), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"commitId"+"}", fmt.Sprintf("%v", commitId), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	r, err := a.client.prepareRequest(a.client.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(r)
+	if err != nil || localVarHTTPResponse == nil {
+		return NewAPIResponseWithError(localVarHTTPResponse, nil, err)
+	}
+	defer localVarHTTPResponse.Body.Close()
+	if localVarHTTPResponse.StatusCode >= 300 {
+		bodyBytes, _ := ioutil.ReadAll(localVarHTTPResponse.Body)
+		return NewAPIResponseWithError(localVarHTTPResponse, bodyBytes, reportError("Status: %v, Body: %s", localVarHTTPResponse.Status, bodyBytes))
+	}
+
+	return NewBitbucketAPIResponse(localVarHTTPResponse)
+}
+/* DefaultApiService
  Retrieve a page of commits from a given starting commit or \&quot;between\&quot; two commits. If no explicit commit is  specified, the tip of the repository&#39;s default branch is assumed. commits may be identified by branch or tag  name or by ID. A path may be supplied to restrict the returned commits to only those which affect that path.  &lt;p&gt;  The authenticated user must have &lt;b&gt;REPO_READ&lt;/b&gt; permission for the specified repository to call this  resource.
 
  @param optional (nil or map[string]interface{}) with one or more of:
