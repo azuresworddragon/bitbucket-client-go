@@ -245,6 +245,10 @@ func GetCommit(w http.ResponseWriter, r *http.Request) {
 	HandleRequest(w, r)
 }
 
+func GetCommitPullRequests(w http.ResponseWriter, r *http.Request) {
+	HandleRequest(w, r)
+}
+
 func GetCommits(w http.ResponseWriter, r *http.Request) {
 	HandleRequest(w, r)
 }

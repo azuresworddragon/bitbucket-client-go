@@ -434,6 +434,13 @@ func GetCommitsResponse(r *APIResponse) ([]Commit, error) {
 	return m, err
 }
 
+// GetCommitPullRequestResponse PullRequests into structure
+func GetCommitPullRequestsResponse(r *APIResponse) ([]PullRequest, error) {
+	var m []PullRequest
+	err := mapstructure.Decode(r.Values["values"], &m)
+	return m, err
+}
+
 // GetTagsResponse cast Tags into structure
 func GetTagsResponse(r *APIResponse) ([]Tag, error) {
 	var m []Tag

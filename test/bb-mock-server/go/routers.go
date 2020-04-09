@@ -462,6 +462,13 @@ var routes = Routes{
 	},
 
 	Route{
+		"GetCommitPullRequests",
+		strings.ToUpper("Get"),
+		"/rest/api/1.0/projects/{projectKey}/repos/{repositorySlug}/commits/{commitId}/pull-requests",
+		GetCommitPullRequests,
+	},
+
+	Route{
 		"GetCommits",
 		strings.ToUpper("Get"),
 		"/rest/api/1.0/projects/{projectKey}/repos/{repositorySlug}/commits",

@@ -573,6 +573,66 @@ func TestGetPullRequestsResponse(t *testing.T) {
 		})
 	}
 }
+func TestGetCommitPullRequestsResponse(t *testing.T) {
+	type args struct {
+		r *APIResponse
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    []PullRequest
+		wantErr bool
+	}{
+		{
+			name: "Empty list",
+			args: args{
+				r: &APIResponse{
+					Values: map[string]interface{}{"values": []interface{}{}},
+				},
+			},
+			want:    nil,
+			wantErr: false,
+		},
+		{
+			name: "Simple PullRequest",
+			args: args{
+				r: &APIResponse{
+					Values: map[string]interface{}{
+						"values": []interface{}{map[string]interface{}{
+							"id": 1,
+						}},
+					},
+				},
+			},
+			want: []PullRequest{{
+				ID: 1,
+			},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Bad response",
+			args: args{
+				r: &APIResponse{
+					Values: map[string]interface{}{"values": "not an array"},
+				},
+			},
+			want:    nil,
+			wantErr: true,
+		}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := GetPullRequestsResponse(tt.args.r)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetPullRequestsResponse() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("GetPullRequestsResponse() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
 
 func TestGetWebhooksResponse(t *testing.T) {
 	type args struct {

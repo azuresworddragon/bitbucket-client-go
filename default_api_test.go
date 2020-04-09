@@ -2478,6 +2478,44 @@ func TestDefaultApiService_GetCommit(t *testing.T) {
 	}
 }
 
+func TestDefaultApiService_GetCommitPullRequests(t *testing.T) {
+	type fields struct {
+		client *APIClient
+	}
+	type args struct {
+		projectKey        string
+		repositorySlug    string
+		commitId          string
+	}
+	tests := []struct {
+		name                     string
+		fields                   fields
+		args                     args
+		want                     *APIResponse
+		wantErr, integrationTest bool
+	}{
+		{"networkErrorContextExceeded", fields{client: generateConfigFake()}, args{}, &APIResponse{Message: "Get https://stash.domain.com/rest/api/1.0/projects//repos//commits//pull-requests: context canceled"}, true, false},
+	}
+	for _, tt := range tests {
+		if tt.integrationTest != runIntegrationTests {
+			continue
+		}
+		t.Run(tt.name, func(t *testing.T) {
+			a := &DefaultApiService{
+				client: tt.fields.client,
+			}
+			got, err := a.GetCommitPullRequests(tt.args.projectKey, tt.args.repositorySlug, tt.args.commitId)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("DefaultApiService.GetCommitPullRequests() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("DefaultApiService.GetCommitPullRequests() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestDefaultApiService_GetCommits(t *testing.T) {
 	type fields struct {
 		client *APIClient
